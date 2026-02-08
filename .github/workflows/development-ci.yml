@@ -1,0 +1,65 @@
+name: Development CI
+
+on:
+  push:
+    branches: [ development ]
+  pull_request:
+    branches: [ development ]
+
+jobs:
+  build-and-test:
+    name: Build & Test on Development
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Create fake google-services.json for CI
+        run: |
+          cp androidApp/google-services-fake.json androidApp/google-services.json
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Run Kotlin linter
+        run: ./gradlew ktlintCheck || echo "Linter warnings found"
+      
+      - name: Run Unit Tests
+        run: |
+          ./gradlew shared:testDebugUnitTest
+          ./gradlew androidApp:testDebugUnitTest
+      
+      - name: Generate Test Report
+        if: always()
+        run: |
+          ./gradlew shared:testDebugUnitTest --continue
+          ./gradlew androidApp:testDebugUnitTest --continue
+      
+      - name: Build Shared Module
+        run: ./gradlew shared:assembleDebug
+      
+      - name: Build Android App (Debug)
+        run: ./gradlew androidApp:assembleDebug
+      
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-${{ github.sha }}
+          path: androidApp/build/outputs/apk/debug/androidApp-debug.apk
+          retention-days: 7
+      
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ github.sha }}
+          path: shared/build/reports/tests/
+          retention-days: 7

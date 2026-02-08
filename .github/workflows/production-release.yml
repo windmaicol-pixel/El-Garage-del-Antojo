@@ -1,0 +1,77 @@
+name: Production Release
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  validate-and-build:
+    name: Validate & Build Production APK
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Create fake google-services.json for CI
+        run: |
+          cp androidApp/google-services-fake.json androidApp/google-services.json
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Run Kotlin linter (strict)
+        run: ./gradlew ktlintCheck
+      
+      - name: Run All Unit Tests
+        run: |
+          ./gradlew shared:test
+          ./gradlew androidApp:testDebugUnitTest
+      
+      - name: Generate Test Coverage
+        run: ./gradlew shared:testDebugUnitTest
+      
+      - name: Build Shared Module (Release)
+        run: ./gradlew shared:assembleRelease
+      
+      - name: Build Android App (Release)
+        run: ./gradlew androidApp:assembleRelease
+      
+      - name: Upload Production APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-${{ github.sha }}
+          path: androidApp/build/outputs/apk/release/androidApp-release-unsigned.apk
+          retention-days: 30
+      
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-test-results-${{ github.sha }}
+          path: shared/build/reports/tests/
+          retention-days: 30
+      
+      - name: Comment PR with APK Info
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Production APK Generated Successfully!**\n\n📦 Download artifact from Actions tab\n🏷️ Build: `${{ github.sha }}`'
+            })
