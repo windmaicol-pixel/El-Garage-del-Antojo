@@ -1,6 +1,6 @@
 # 📋 Resumen del Proyecto - El Garage del Antojo
 
-## ✅ Estado Actual
+## ✅ Estado Actual (8 Feb 2026)
 
 ### ¿Qué se ha completado?
 
@@ -24,15 +24,17 @@
 4. **Configuración de Git** ✅
    - Repositorio inicializado
    - Remote: https://github.com/windmaicol-pixel/El-Garage-del-Antojo.git
-   - Rama `main` creada ✅
-   - Rama `development` creada ✅
+   - Rama `main` subida a GitHub ✅
+   - Rama `development` subida a GitHub ✅
    - .gitignore configurado
 
-5. **Documentación** ✅
+5. **Documentación Completa** ✅
    - README.md con badges e información del proyecto
    - GIT_FLOW.md con workflow detallado
    - ARCHITECTURE.md con Clean Architecture y SOLID
    - CONTEXT.md con roadmap y objetivos
+   - BUSINESS_PLAN.md con proyecciones y flujo operativo ✅
+   - DEPLOY_GITHUB.md con instrucciones de deploy
 
 6. **Dependencias Incluidas** ✅
    - Firebase (Auth, Firestore, Storage)
@@ -48,6 +50,7 @@
    - AndroidManifest configurado
    - Splash Screen
    - Recursos básicos (strings, colors, themes)
+   - Iconos de launcher (todas las densidades)
 
 ---
 
@@ -259,19 +262,24 @@ git branch -d feature/mi-feature
 
 ## 🎯 Objetivos del Negocio
 
-**El Garage del Antojo** venderá:
+**El Garage del Antojo** es un negocio de delivery local que vende:
 - 🍟 Papas a la francesa (varios estilos)
-- 🍹 Preparados para micheladas
-- Otros productos de menú
+- 🍹 Preparados para micheladas/clamatos
+- 📦 Combos
 
-**Tipo de app**: E-commerce de comida rápida
+**Ubicación**: Fraccionamiento Puerta Navarra, Querétaro, QRO 76116  
+**Cobertura**: 10-12 condominios (~1-1.5 km de radio)  
+**Tipo de app**: E-commerce de comida local con panel de administración
 
 **Características clave**:
-- Pedidos en línea
-- Personalización de productos
-- Carrito de compras
-- Historial de pedidos
-- Notificaciones de estado
+- ✅ Envío GRATIS (incluido en precio)
+- ✅ Pedidos por app (Android) o WhatsApp
+- ✅ Entregas rápidas (15-25 min)
+- ✅ Pago al recibir (efectivo/transferencia/tarjeta)
+- ✅ Panel admin para gestionar todo
+- ✅ Crear pedidos manualmente (para WhatsApp/llamadas)
+
+**Ventaja competitiva**: Local + Rápido + Sin envío vs Uber Eats/Rappi ($30-$45 envío)
 
 ---
 
